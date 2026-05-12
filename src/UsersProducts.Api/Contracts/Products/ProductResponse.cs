@@ -6,6 +6,9 @@ public sealed record ProductResponse(
     string Description,
     decimal Price,
     int Stock,
+    Guid? CategoryId,
+    string? CategoryName,
+    string? CategorySlug,
     bool IsActive,
     DateTime CreatedAtUtc,
     DateTime? UpdatedAtUtc

@@ -16,4 +16,7 @@ public sealed class CreateProductRequest
 
     [Range(0, int.MaxValue)]
     public int Stock { get; init; }
+
+    [Required]
+    public Guid CategoryId { get; init; }
 }

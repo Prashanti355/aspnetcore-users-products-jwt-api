@@ -12,6 +12,10 @@ public sealed class Product
 
     public int Stock { get; private set; }
 
+    public Guid? CategoryId { get; private set; }
+
+    public Category? Category { get; private set; }
+
     public bool IsActive { get; private set; } = true;
 
     public DateTime CreatedAtUtc { get; private set; } = DateTime.UtcNow;
@@ -22,22 +26,24 @@ public sealed class Product
     {
     }
 
-    public Product(string name, string description, decimal price, int stock)
+    public Product(string name, string description, decimal price, int stock, Guid categoryId)
     {
         Name = NormalizeName(name);
         Description = NormalizeDescription(description);
         SetPrice(price);
         SetStock(stock);
+        SetCategory(categoryId);
         IsActive = true;
         CreatedAtUtc = DateTime.UtcNow;
     }
 
-    public void Update(string name, string description, decimal price, int stock, bool isActive)
+    public void Update(string name, string description, decimal price, int stock, Guid categoryId, bool isActive)
     {
         Name = NormalizeName(name);
         Description = NormalizeDescription(description);
         SetPrice(price);
         SetStock(stock);
+        SetCategory(categoryId);
         IsActive = isActive;
         UpdatedAtUtc = DateTime.UtcNow;
     }
@@ -46,6 +52,16 @@ public sealed class Product
     {
         IsActive = false;
         UpdatedAtUtc = DateTime.UtcNow;
+    }
+
+    private void SetCategory(Guid categoryId)
+    {
+        if (categoryId == Guid.Empty)
+        {
+            throw new ArgumentException("La categoría del producto es obligatoria.");
+        }
+
+        CategoryId = categoryId;
     }
 
     private void SetPrice(decimal price)

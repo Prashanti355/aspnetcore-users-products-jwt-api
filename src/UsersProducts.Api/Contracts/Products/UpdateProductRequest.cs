@@ -17,5 +17,8 @@ public sealed class UpdateProductRequest
     [Range(0, int.MaxValue)]
     public int Stock { get; init; }
 
+    [Required]
+    public Guid CategoryId { get; init; }
+
     public bool IsActive { get; init; }
 }

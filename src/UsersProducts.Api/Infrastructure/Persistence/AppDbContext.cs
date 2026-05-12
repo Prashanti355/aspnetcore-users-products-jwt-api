@@ -89,6 +89,14 @@ public sealed class AppDbContext : DbContext
                 .HasColumnName("stock")
                 .IsRequired();
 
+            entity.Property(product => product.CategoryId)
+                .HasColumnName("category_id");
+
+            entity.HasOne(product => product.Category)
+                .WithMany()
+                .HasForeignKey(product => product.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             entity.Property(product => product.IsActive)
                 .HasColumnName("is_active")
                 .IsRequired();
@@ -101,6 +109,8 @@ public sealed class AppDbContext : DbContext
                 .HasColumnName("updated_at_utc");
 
             entity.HasIndex(product => product.Name);
+
+            entity.HasIndex(product => product.CategoryId);
         });
 
         modelBuilder.Entity<Category>(entity =>
