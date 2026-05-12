@@ -12,6 +12,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using UsersProducts.Api.Services.Auth;
+using UsersProducts.Api.Common.Security;
+using UsersProducts.Api.Domain.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,7 +104,14 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthPolicies.AdminOnly, policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole(UserRole.Admin.ToString());
+    });
+});
 
 var app = builder.Build();
 
