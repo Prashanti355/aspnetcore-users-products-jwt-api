@@ -17,6 +17,7 @@ using UsersProducts.Api.Domain.Enums;
 using UsersProducts.Api.Common.OpenApi;
 using UsersProducts.Api.Infrastructure.Seed;
 using UsersProducts.Api.Services.Products;
+using UsersProducts.Api.Services.Categories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +73,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

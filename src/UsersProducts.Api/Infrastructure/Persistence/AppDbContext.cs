@@ -11,6 +11,7 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<Category> Categories => Set<Category>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -100,6 +101,45 @@ public sealed class AppDbContext : DbContext
                 .HasColumnName("updated_at_utc");
 
             entity.HasIndex(product => product.Name);
+        });
+
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.ToTable("categories");
+
+            entity.HasKey(category => category.Id);
+
+            entity.Property(category => category.Id)
+                .HasColumnName("id");
+
+            entity.Property(category => category.Name)
+                .HasColumnName("name")
+                .HasMaxLength(150)
+                .IsRequired();
+
+            entity.Property(category => category.Slug)
+                .HasColumnName("slug")
+                .HasMaxLength(180)
+                .IsRequired();
+
+            entity.HasIndex(category => category.Slug)
+                .IsUnique();
+
+            entity.Property(category => category.Description)
+                .HasColumnName("description")
+                .HasMaxLength(1000)
+                .IsRequired();
+
+            entity.Property(category => category.IsActive)
+                .HasColumnName("is_active")
+                .IsRequired();
+
+            entity.Property(category => category.CreatedAtUtc)
+                .HasColumnName("created_at_utc")
+                .IsRequired();
+
+            entity.Property(category => category.UpdatedAtUtc)
+                .HasColumnName("updated_at_utc");
         });
     }
 
