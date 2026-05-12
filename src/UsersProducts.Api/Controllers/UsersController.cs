@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using UsersProducts.Api.Common.Exceptions;
 using UsersProducts.Api.Contracts.Users;
 using UsersProducts.Api.Services.Users;
+using UsersProducts.Api.Common.Exceptions;
 
 namespace UsersProducts.Api.Controllers;
 
@@ -35,7 +35,7 @@ public sealed class UsersController : ControllerBase
 
         if (user is null)
         {
-            return NotFound(new { message = "Usuario no encontrado." });
+            throw new NotFoundException("Usuario no encontrado.");
         }
 
         return Ok(user);
@@ -49,20 +49,13 @@ public sealed class UsersController : ControllerBase
         CreateUserRequest request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var createdUser = await _userService.CreateAsync(request, cancellationToken);
+        var createdUser = await _userService.CreateAsync(request, cancellationToken);
 
-            return CreatedAtAction(
-                nameof(GetUserById),
-                new { id = createdUser.Id },
-                createdUser
-            );
-        }
-        catch (ConflictException exception)
-        {
-            return Conflict(new { message = exception.Message });
-        }
+        return CreatedAtAction(
+            nameof(GetUserById),
+            new { id = createdUser.Id },
+            createdUser
+        );
     }
 
     [HttpPut("{id:guid}")]
@@ -75,21 +68,14 @@ public sealed class UsersController : ControllerBase
         UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var updatedUser = await _userService.UpdateAsync(id, request, cancellationToken);
+        var updatedUser = await _userService.UpdateAsync(id, request, cancellationToken);
 
-            if (updatedUser is null)
-            {
-                return NotFound(new { message = "Usuario no encontrado." });
-            }
-
-            return Ok(updatedUser);
-        }
-        catch (ConflictException exception)
+        if (updatedUser is null)
         {
-            return Conflict(new { message = exception.Message });
+            throw new NotFoundException("Usuario no encontrado.");
         }
+
+        return Ok(updatedUser);
     }
 
     [HttpDelete("{id:guid}")]
@@ -101,7 +87,7 @@ public sealed class UsersController : ControllerBase
 
         if (!deactivated)
         {
-            return NotFound(new { message = "Usuario no encontrado." });
+            throw new NotFoundException("Usuario no encontrado.");
         }
 
         return NoContent();
