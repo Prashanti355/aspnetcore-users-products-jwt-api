@@ -15,6 +15,7 @@ using UsersProducts.Api.Services.Auth;
 using UsersProducts.Api.Common.Security;
 using UsersProducts.Api.Domain.Enums;
 using UsersProducts.Api.Common.OpenApi;
+using UsersProducts.Api.Infrastructure.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +72,16 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.Configure<DatabaseInitializationOptions>(
+    builder.Configuration.GetSection(DatabaseInitializationOptions.SectionName)
+);
+
+builder.Services.Configure<AdminSeedOptions>(
+    builder.Configuration.GetSection(AdminSeedOptions.SectionName)
+);
+
+builder.Services.AddHostedService<DatabaseInitializerHostedService>();
 
 var jwtIssuer = builder.Configuration["Jwt:Issuer"]
     ?? throw new InvalidOperationException("Jwt:Issuer no está configurado.");

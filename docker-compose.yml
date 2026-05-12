@@ -3,15 +3,15 @@ services:
     image: postgres:18-alpine
     container_name: aspnet_users_products_db
     environment:
-      POSTGRES_DB: users_products_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d users_products_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,13 +24,22 @@ services:
       dockerfile: Dockerfile
     container_name: aspnet_users_products_api
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=users_products_db;Username=postgres;Password=postgres
-      Jwt__Issuer: UsersProducts.Api
-      Jwt__Audience: UsersProducts.Client
-      Jwt__SecretKey: clave-super-secreta-de-desarrollo-con-mas-de-32-caracteres
-      Jwt__ExpirationMinutes: 60
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__SecretKey: ${JWT_SECRET_KEY}
+      Jwt__ExpirationMinutes: ${JWT_EXPIRATION_MINUTES}
+
+      DatabaseInitialization__ApplyMigrations: ${DATABASE_INITIALIZATION_APPLY_MIGRATIONS}
+
+      AdminSeed__Enabled: ${ADMIN_SEED_ENABLED}
+      AdminSeed__Name: ${ADMIN_SEED_NAME}
+      AdminSeed__Email: ${ADMIN_SEED_EMAIL}
+      AdminSeed__Password: ${ADMIN_SEED_PASSWORD}
     ports:
       - "8080:8080"
     depends_on:
