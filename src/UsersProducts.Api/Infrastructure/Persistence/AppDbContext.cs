@@ -10,6 +10,7 @@ public sealed class AppDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Product> Products => Set<Product>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -58,5 +59,49 @@ public sealed class AppDbContext : DbContext
             entity.Property(user => user.UpdatedAtUtc)
                 .HasColumnName("updated_at_utc");
         });
+
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.ToTable("products");
+
+            entity.HasKey(product => product.Id);
+
+            entity.Property(product => product.Id)
+                .HasColumnName("id");
+
+            entity.Property(product => product.Name)
+                .HasColumnName("name")
+                .HasMaxLength(150)
+                .IsRequired();
+
+            entity.Property(product => product.Description)
+                .HasColumnName("description")
+                .HasMaxLength(1000)
+                .IsRequired();
+
+            entity.Property(product => product.Price)
+                .HasColumnName("price")
+                .HasPrecision(18, 2)
+                .IsRequired();
+
+            entity.Property(product => product.Stock)
+                .HasColumnName("stock")
+                .IsRequired();
+
+            entity.Property(product => product.IsActive)
+                .HasColumnName("is_active")
+                .IsRequired();
+
+            entity.Property(product => product.CreatedAtUtc)
+                .HasColumnName("created_at_utc")
+                .IsRequired();
+
+            entity.Property(product => product.UpdatedAtUtc)
+                .HasColumnName("updated_at_utc");
+
+            entity.HasIndex(product => product.Name);
+        });
     }
+
+    
 }

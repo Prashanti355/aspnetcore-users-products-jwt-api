@@ -48,6 +48,37 @@ services:
     networks:
       - backend_network
 
+  tools:
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    container_name: aspnet_users_products_tools
+    working_dir: /src
+    volumes:
+      - .:/src
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__SecretKey: ${JWT_SECRET_KEY}
+      Jwt__ExpirationMinutes: ${JWT_EXPIRATION_MINUTES}
+
+      DatabaseInitialization__ApplyMigrations: ${DATABASE_INITIALIZATION_APPLY_MIGRATIONS}
+
+      AdminSeed__Enabled: ${ADMIN_SEED_ENABLED}
+      AdminSeed__Name: ${ADMIN_SEED_NAME}
+      AdminSeed__Email: ${ADMIN_SEED_EMAIL}
+      AdminSeed__Password: ${ADMIN_SEED_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend_network
+    profiles:
+      - tools
+    entrypoint: ["bash", "-lc"]
+
 volumes:
   postgres_data:
 
