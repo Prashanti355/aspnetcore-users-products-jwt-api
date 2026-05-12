@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using UsersProducts.Api.Contracts.Users;
 using UsersProducts.Api.Services.Users;
 using UsersProducts.Api.Common.Exceptions;
-
+using Microsoft.AspNetCore.Authorization;
 namespace UsersProducts.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/users")]
 [Produces("application/json")]
 public sealed class UsersController : ControllerBase

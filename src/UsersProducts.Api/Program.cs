@@ -120,6 +120,8 @@ app.UseStatusCodePages(async statusCodeContext =>
 
     var error = statusCode switch
     {
+        StatusCodes.Status401Unauthorized => "Unauthorized",
+        StatusCodes.Status403Forbidden => "Forbidden",
         StatusCodes.Status404NotFound => "Not Found",
         StatusCodes.Status405MethodNotAllowed => "Method Not Allowed",
         _ => "HTTP Error"
@@ -127,6 +129,8 @@ app.UseStatusCodePages(async statusCodeContext =>
 
     var message = statusCode switch
     {
+        StatusCodes.Status401Unauthorized => "No se proporcionó un token válido para acceder a este recurso.",
+        StatusCodes.Status403Forbidden => "No tienes permisos suficientes para acceder a este recurso.",
         StatusCodes.Status404NotFound => "El recurso solicitado no fue encontrado.",
         StatusCodes.Status405MethodNotAllowed => "El método HTTP no está permitido para este recurso.",
         _ => "La solicitud no pudo ser procesada."

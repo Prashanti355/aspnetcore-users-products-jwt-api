@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using UsersProducts.Api.Contracts.Auth;
 using UsersProducts.Api.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UsersProducts.Api.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/auth")]
 [Produces("application/json")]
 public sealed class AuthController : ControllerBase
