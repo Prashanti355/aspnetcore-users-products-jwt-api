@@ -25,6 +25,15 @@ public sealed class ExceptionHandlingMiddleware
         {
             await _next(httpContext);
         }
+        catch (UnauthorizedException exception)
+        {
+            await WriteErrorResponseAsync(
+                httpContext,
+                StatusCodes.Status401Unauthorized,
+                "Unauthorized",
+                exception.Message
+            );
+        }
         catch (NotFoundException exception)
         {
             await WriteErrorResponseAsync(
@@ -65,6 +74,7 @@ public sealed class ExceptionHandlingMiddleware
                 "Ocurrió un error interno en el servidor."
             );
         }
+        
     }
 
     private static async Task WriteErrorResponseAsync(

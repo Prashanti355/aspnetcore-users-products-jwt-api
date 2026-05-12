@@ -27,6 +27,10 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=users_products_db;Username=postgres;Password=postgres
+      Jwt__Issuer: UsersProducts.Api
+      Jwt__Audience: UsersProducts.Client
+      Jwt__SecretKey: clave-super-secreta-de-desarrollo-con-mas-de-32-caracteres
+      Jwt__ExpirationMinutes: 60
     ports:
       - "8080:8080"
     depends_on:
