@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using UsersProducts.Api.Services.Auth;
 using UsersProducts.Api.Common.Security;
 using UsersProducts.Api.Domain.Enums;
+using UsersProducts.Api.Common.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +54,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     };
 });
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("La cadena de conexión DefaultConnection no está configurada.");
@@ -168,6 +172,12 @@ app.UseStatusCodePages(async statusCodeContext =>
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Users Products API v1");
+        options.RoutePrefix = "swagger";
+    });
 }
 
 app.UseHttpsRedirection();
